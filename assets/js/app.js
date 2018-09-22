@@ -9,7 +9,7 @@ function renderButtons() {
         var button = $("<button>");
         // Adding a class
         button.addClass("category");
-        button.addClass("btn");
+        button.addClass("btn btn-primary");
         // Adding a data-attribute with a value of the tv show at index i
         button.attr("data-name", topics[i]);
         // Providing the button's text with a value of the tv show
@@ -44,34 +44,52 @@ function getGiphy() {
             var rating = $("<p>").text("Rating " + results[i].rating);
             giphyDiv.append(rating);
 
-			var image = $("<img>");
-			image.attr("src", results[i].images.fixed_height_small_still.url);
-			//paused images
-			image.attr("data-still", results[i].images.fixed_height_small_still.url);
-			//animated images
-			image.attr("data-animate", results[i].images.fixed_height_small.url);
-			//set images to paused initially
-			image.attr("data-state", "still");
-			image.addClass("image");
+            var image = $("<img>");
+            image.attr("src", results[i].images.fixed_height_small_still.url);
+            //paused images
+            image.attr("data-still", results[i].images.fixed_height_small_still.url);
+            //animated images
+            image.attr("data-animate", results[i].images.fixed_height_small.url);
+            //set images to paused initially
+            image.attr("data-state", "still");
+            image.addClass("image");
             giphyDiv.append(image);
-			//add new div to existing divs
-			$("#giphyButtonsId").append(giphyDiv);
+            //add new div to existing divs
+            $("#giphyButtonsId").append(giphyDiv);
         }
     });
+}
+
+// prevent user enters a dupplicate show
+function findDupplicate(name) {
+    var duplicate = false;
+    for (i = 0; i < topics.length; i++) {
+        if (name.toLowerCase() === topics[i].toLowerCase()) {
+            duplicate = true;
+            break;
+        }
+    }
+    return duplicate;
 }
 
 // On Click event associated with the add button function
 $("#submitCatId").on("click", function (event) {
     event.preventDefault();
-
+    var duplicate = true;
     // Get the "value" from the textbox and store it a variable
-    var animal = $("#catTextId").val().trim();
-    if (animal != "" ) {
-        topics.push(animal);
-        $("#catTextId").val("");
-        renderButtons();
+    var show = $("#catTextId").val().trim();
+    if (show != "") {
+        if (!findDupplicate(show)) {
+            topics.push(show);
+            $("#catTextId").val("");
+            renderButtons();
+        }
+        else {
+            alert(show+" is already added on the list!")
+            $("#catTextId").val("");
+        }
     }
-});
+})
 
 $(document).ready(function () {
 
